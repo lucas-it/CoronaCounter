@@ -7,6 +7,7 @@
         <meta charset="UTF-8"></meta>
         <link rel="stylesheet" href="bootstrap.css">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+        <link rel="icon" href="virus.png">
         <style>
             .sz-1 {
                 font-size: 20pt;
@@ -71,6 +72,15 @@
                                 </div>
                             </div>
 
+                            <div class="card text-center mb-2 bg-primary" id="death-counter-card">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <span class="display-4" id="recovered_percent">0</span>
+                                    </p>
+                                    <h4 class="card-title">TAUX DE GUÉRISON</h4>
+                                </div>
+                            </div>
+
                         </div>
 
                     </div>
@@ -120,6 +130,16 @@
                                     <h4 class="card-title">TAUX DE MORTALITÉ</h4>
                                 </div>
                             </div>
+
+                            <div class="card text-center mb-2 bg-primary" id="death-counter-card">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <span class="display-4" id="ch_recovered_percent">0</span>
+                                    </p>
+                                    <h4 class="card-title">TAUX DE GUÉRISON</h4>
+                                </div>
+                            </div>
+
                         </div>
 
                     </div>
@@ -157,6 +177,7 @@
                     var deaths = out.deaths.value;
                     var recovered = out.recovered.value;
                     var deathPercent = (deaths / (confirmed + deaths + recovered)) * 100
+                    var recoveredPercent = (recovered / (confirmed + deaths + recovered)) * 100
                     var lastDataUpdate = out.lastUpdate.replace("T", " - ").substring(0, 21);
 
                     console.log('Confirmed: ', confirmed)
@@ -170,6 +191,9 @@
 
                     console.log('Death Percent: ', deathPercent)
                     document.getElementById("death_percent").innerHTML = Math.round(deathPercent * 100) / 100 + " %"
+
+                    console.log('Recovered Percent: ', recoveredPercent)
+                    document.getElementById("recovered_percent").innerHTML = Math.round(recoveredPercent * 100) / 100 + " %"
 
                     console.log('Last data update : ', lastDataUpdate)
                     document.getElementById("last_update").innerHTML = lastDataUpdate
@@ -185,6 +209,7 @@
                     var deaths = out.deaths.value;
                     var recovered = out.recovered.value;
                     var deathPercent = (deaths / (confirmed + deaths + recovered)) * 100
+                    var recoveredPercent = (recovered / (confirmed + deaths + recovered)) * 100
                     var lastDataUpdate = out.lastUpdate.replace("T", " - ").substring(0, 21);
 
                     console.log('CH - Confirmed: ', confirmed)
@@ -198,6 +223,9 @@
 
                     console.log('CH - Death Percent: ', deathPercent)
                     document.getElementById("ch_death_percent").innerHTML = Math.round(deathPercent * 100) / 100 + " %"
+
+                    console.log('CH - Recovered Percent: ', recoveredPercent)
+                    document.getElementById("ch_recovered_percent").innerHTML = Math.round(recoveredPercent * 100) / 100 + " %"
 
                     console.log('CH - Last data update : ', lastDataUpdate)
                     document.getElementById("ch_last_update").innerHTML = lastDataUpdate
