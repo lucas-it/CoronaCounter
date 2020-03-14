@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>CoronaCounter - lucasaymon.ch</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta charset="UTF-8"></meta>
+        <link rel="stylesheet" href="bootstrap.css">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+        <style>
+            .sz-1 {
+                font-size: 20pt;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+            <h1 class="display-1">🦠 CoronaCounter</h1>
+            <h4>Are we going to die ?</h4>
+        </div>
+
+        <br/>
+
+        <div class="container">
+
+            <div class="row">
+
+                <div class="col-md-6" id="counters">
+
+                    <div class="card">
+
+                        <div class="card-header text-center sz-1">🌍 World Counter</div>
+
+                        <div class="card-body">
+
+                            <div class="card text-center mb-2 bg-warning" id="infection-counter-card">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <span class="display-4" id="confirmed">0</span>
+                                    </p>
+                                    <h4 class="card-title">INFECTIONS</h4>
+                                </div>
+                            </div>
+
+                            <div class="card text-center mb-2 bg-danger" id="death-counter-card">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <span class="display-4" id="deaths">0</span>
+                                    </p>
+                                    <h4 class="card-title">DÉCÈS</h4>
+                                </div>
+                            </div>
+
+                            <div class="card text-center mb-2 bg-success" id="death-counter-card">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <span class="display-4" id="recovered">0</span>
+                                    </p>
+                                    <h4 class="card-title">GUÉRIS</h4>
+                                </div>
+                            </div>
+
+                            <div class="card text-center mb-2 bg-secondary" id="death-counter-card">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <span class="display-4" id="death_percent">0</span>
+                                    </p>
+                                    <h4 class="card-title">TAUX DE MORTALITÉ</h4>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 col-md-offset-8" id="counters">
+
+                    <div class="card">
+
+                        <div class="card-header text-center sz-1">🇨🇭 Switzerland Counter</div>
+
+                        <div class="card-body">
+
+                            <div class="card text-center mb-2 bg-warning" id="infection-counter-card">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <span class="display-4" id="ch_confirmed">0</span>
+                                    </p>
+                                    <h4 class="card-title">INFECTIONS</h4>
+                                </div>
+                            </div>
+
+                            <div class="card text-center mb-2 bg-danger" id="death-counter-card">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <span class="display-4" id="ch_deaths">0</span>
+                                    </p>
+                                    <h4 class="card-title">DÉCÈS</h4>
+                                </div>
+                            </div>
+
+                            <div class="card text-center mb-2 bg-success" id="death-counter-card">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <span class="display-4" id="ch_recovered">0</span>
+                                    </p>
+                                    <h4 class="card-title">GUÉRIS</h4>
+                                </div>
+                            </div>
+
+                            <div class="card text-center mb-2 bg-secondary" id="death-counter-card">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <span class="display-4" id="ch_death_percent">0</span>
+                                    </p>
+                                    <h4 class="card-title">TAUX DE MORTALITÉ</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <hr>
+
+        <footer class="text-muted">
+            <div class="container">
+                <h5>Made with ♥️ by <a href="https://github.com/lucas-it" target="_blank">Lucas Aymon</a></h5>
+                <div class="row">
+                    <div class="col">
+                        <p>Last world data update : <b><i id="last_update">0</i></b><br/> Last switzerland data update : <b><i id="ch_last_update">0</i></b></p>
+                    </div>
+                    <div class="col">
+                        <p>Data source : <a href="https://covid19.mathdro.id/api" target="_blank">covid19.mathdro.id/api</a><br/> API creator's Github : <a href="https://github.com/mathdroid/covid19" target="_blank">Mathdroid - covid19</a></p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <script>
+            let test = 0;
+
+            fetch("https://covid19.mathdro.id/api")
+                .then(res => res.json())
+                .then((out) => {
+
+                    var confirmed = out.confirmed.value;
+                    var deaths = out.deaths.value;
+                    var recovered = out.recovered.value;
+                    var deathPercent = (deaths / (confirmed + deaths + recovered)) * 100
+                    var lastDataUpdate = out.lastUpdate.replace("T", " - ").substring(0, 21);
+
+                    console.log('Confirmed: ', confirmed)
+                    document.getElementById("confirmed").innerHTML = numberWithCommas(confirmed)
+
+                    console.log('Deaths: ', deaths)
+                    document.getElementById("deaths").innerHTML = numberWithCommas(deaths)
+
+                    console.log('Recovered: ', recovered)
+                    document.getElementById("recovered").innerHTML = numberWithCommas(recovered)
+
+                    console.log('Death Percent: ', deathPercent)
+                    document.getElementById("death_percent").innerHTML = Math.round(deathPercent * 100) / 100 + " %"
+
+                    console.log('Last data update : ', lastDataUpdate)
+                    document.getElementById("last_update").innerHTML = lastDataUpdate
+
+                })
+                .catch(err => console.error(err));
+
+            fetch("https://covid19.mathdro.id/api/countries/ch")
+                .then(res => res.json())
+                .then((out) => {
+
+                    var confirmed = out.confirmed.value;
+                    var deaths = out.deaths.value;
+                    var recovered = out.recovered.value;
+                    var deathPercent = (deaths / (confirmed + deaths + recovered)) * 100
+                    var lastDataUpdate = out.lastUpdate.replace("T", " - ").substring(0, 21);
+
+                    console.log('CH - Confirmed: ', confirmed)
+                    document.getElementById("ch_confirmed").innerHTML = numberWithCommas(confirmed)
+
+                    console.log('CH - Deaths: ', deaths)
+                    document.getElementById("ch_deaths").innerHTML = numberWithCommas(deaths)
+
+                    console.log('CH - Recovered: ', recovered)
+                    document.getElementById("ch_recovered").innerHTML = numberWithCommas(recovered)
+
+                    console.log('CH - Death Percent: ', deathPercent)
+                    document.getElementById("ch_death_percent").innerHTML = Math.round(deathPercent * 100) / 100 + " %"
+
+                    console.log('CH - Last data update : ', lastDataUpdate)
+                    document.getElementById("ch_last_update").innerHTML = lastDataUpdate
+
+                })
+                .catch(err => console.error(err));
+
+            function numberWithCommas(str) {
+                return str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+            }
+        </script>
+
+    </body>
+
+</html>
