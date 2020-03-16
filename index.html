@@ -7,6 +7,7 @@
         <meta charset="UTF-8"></meta>
         <link rel="stylesheet" href="bootstrap.css">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+        <link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
         <style>
             .sz-1 {
                 font-size: 20pt;
@@ -17,7 +18,7 @@
     <body>
 
         <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-            <h1 class="display-1">🦠 CoronaCounter</h1>
+            <h1 class="display-1">CoronaCounter</h1>
             <h4>Are we going to die ?</h4>
         </div>
 
@@ -90,7 +91,7 @@
 
                     <div class="card">
 
-                        <div class="card-header text-center sz-1">🇨🇭 Switzerland Counter</div>
+                        <div class="card-header text-center sz-1"><i class="em em-flag-ch" aria-role="presentation" aria-label="Switzerland Flag"></i> Switzerland Counter</div>
 
                         <div class="card-body">
 
@@ -147,6 +148,28 @@
 
             </div>
 
+            <hr>
+
+            <br/>
+            <div class="text-center display-4">🌍 World statistics</div>
+            <br/>
+
+            <div class="row">
+
+                <div class="col-md-6" id="counters">
+
+                    <canvas id="confirmedGraph" style="max-width: 100%;"></canvas>
+
+                </div>
+
+                <div class="col-md-6 col-md-offset-8" id="counters">
+
+                    <canvas id="recoveredGraph" style="max-width: 100%;"></canvas>
+
+                </div>
+
+            </div>
+
         </div>
 
         <hr>
@@ -159,25 +182,26 @@
                         <p>Last world data update : <b><i id="last_update">0</i></b><br/> Last switzerland data update : <b><i id="ch_last_update">0</i></b></p>
                     </div>
                     <div class="col">
-                        <p>Data source : <a href="https://coronavirus-tracker-api.herokuapp.com/all" target="_blank">coronavirus-tracker-api.herokuapp.com/all</a></p>
+                        <p>Data source : <a href="https://covid19.mathdro.id/api" target="_blank">covid19.mathdro.id/api</a></p>
                     </div>
                 </div>
             </div>
         </footer>
 
+        <!-- jQuery -->
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+        <!-- Get datas from API -->
         <script>
-            fetch(/*"https://covid19.mathdro.id/api"*/"https://coronavirus-tracker-api.herokuapp.com/all")
+            fetch("https://covid19.mathdro.id/api")
                 .then(res => res.json())
                 .then((out) => {
 
-                    console.log(out)
-
-                    var confirmed = out.confirmed.latest;
-                    var deaths = out.deaths.latest;
-                    var recovered = out.recovered.latest;
+                    var confirmed = out.confirmed.value;
+                    var deaths = out.deaths.value;
+                    var recovered = out.recovered.value;
                     var deathPercent = (deaths / (confirmed + deaths + recovered)) * 100
                     var recoveredPercent = (recovered / (confirmed + deaths + recovered)) * 100
-                    var lastDataUpdate = out.confirmed.last_updated.replace("T", " - ").substring(0, 21);
+                    var lastDataUpdate = out.lastUpdate.replace("T", " - ").substring(0, 21);
 
                     console.log('Confirmed: ', confirmed)
                     document.getElementById("confirmed").innerHTML = numberWithCommas(confirmed)
@@ -200,20 +224,16 @@
                 })
                 .catch(err => console.error(err));
 
-            fetch(/*"https://covid19.mathdro.id/api/countries/ch"*/"https://coronavirus-tracker-api.herokuapp.com/all")
+            fetch("https://covid19.mathdro.id/api/countries/ch")
                 .then(res => res.json())
                 .then((out) => {
 
-                    var arrayConfirmCH = out.confirmed.locations[31]
-                    var arrayDeathsCH = out.deaths.locations[31]
-                    var arrayRecovered = out.recovered.locations[31]
-                    
-                    var confirmed = arrayConfirmCH.latest;
-                    var deaths = arrayDeathsCH.latest;
-                    var recovered = arrayRecovered.latest;
+                    var confirmed = out.confirmed.value
+                    var deaths = out.deaths.value
+                    var recovered = out.recovered.value
                     var deathPercent = (deaths / (confirmed + deaths + recovered)) * 100
                     var recoveredPercent = (recovered / (confirmed + deaths + recovered)) * 100
-                    var lastDataUpdate = out.confirmed.last_updated.replace("T", " - ").substring(0, 21);
+                    var lastDataUpdate = out.lastUpdate.replace("T", " - ").substring(0, 21);
 
                     console.log('CH - Confirmed: ', confirmed)
                     document.getElementById("ch_confirmed").innerHTML = numberWithCommas(confirmed)
@@ -240,6 +260,91 @@
                 return str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "'");
             }
         </script>
+        <!-- Set diagram -->
+        <script type="text/javascript">
+
+            fetch("https://covid19.mathdro.id/api/daily")
+                .then(res => res.json())
+                .then((out) => {
+
+                    var history = out
+                    var aConfHistory = new Array()
+                    var aRecovHistory = new Array()
+
+                    Object.keys(history).map(function (key) {
+                        aConfHistory[history[key].reportDateString] = history[key].totalConfirmed
+                        aRecovHistory[history[key].reportDateString] = history[key].totalRecovered
+                    })
+
+                    console.log(aConfHistory)
+
+                    var confirmedHistoryDates = Object.keys(aConfHistory);
+                    var confirmedHistoryValues = Object.values(aConfHistory);
+
+                    var recoveredHistoryDates = Object.keys(aRecovHistory);
+                    var recoveredHistoryValues = Object.values(aRecovHistory);
+
+                    var ctx = document.getElementById('confirmedGraph').getContext('2d')
+                    var myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: confirmedHistoryDates,
+                            datasets: [{
+                                label: 'INFECTÉS',
+                                data: confirmedHistoryValues,
+                                backgroundColor: [
+                                    'rgba(255, 193, 7, 0.5)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 193, 7, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
+                        }
+                    })
+
+                    var ctx = document.getElementById('recoveredGraph').getContext('2d')
+                    var myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: recoveredHistoryDates,
+                            datasets: [{
+                                label: 'GUÉRIS',
+                                data: recoveredHistoryValues,
+                                backgroundColor: [
+                                    'rgba(40, 167, 69, 0.5)'
+                                ],
+                                borderColor: [
+                                    'rgba(40, 167, 69, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
+                        }
+                    })
+
+                })
+                .catch(err => console.error(err))
+
+        </script>
+
 
     </body>
 
