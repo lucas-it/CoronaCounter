@@ -7,7 +7,6 @@
         <meta charset="UTF-8"></meta>
         <link rel="stylesheet" href="bootstrap.css">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-        <link rel="icon" href="virus.png">
         <style>
             .sz-1 {
                 font-size: 20pt;
@@ -160,25 +159,25 @@
                         <p>Last world data update : <b><i id="last_update">0</i></b><br/> Last switzerland data update : <b><i id="ch_last_update">0</i></b></p>
                     </div>
                     <div class="col">
-                        <p>Data source : <a href="https://covid19.mathdro.id/api" target="_blank">covid19.mathdro.id/api</a><br/> API creator's Github : <a href="https://github.com/mathdroid/covid19" target="_blank">Mathdroid - covid19</a></p>
+                        <p>Data source : <a href="https://coronavirus-tracker-api.herokuapp.com/all" target="_blank">coronavirus-tracker-api.herokuapp.com/all</a></p>
                     </div>
                 </div>
             </div>
         </footer>
 
         <script>
-            let test = 0;
-
-            fetch("https://covid19.mathdro.id/api")
+            fetch(/*"https://covid19.mathdro.id/api"*/"https://coronavirus-tracker-api.herokuapp.com/all")
                 .then(res => res.json())
                 .then((out) => {
 
-                    var confirmed = out.confirmed.value;
-                    var deaths = out.deaths.value;
-                    var recovered = out.recovered.value;
+                    console.log(out)
+
+                    var confirmed = out.confirmed.latest;
+                    var deaths = out.deaths.latest;
+                    var recovered = out.recovered.latest;
                     var deathPercent = (deaths / (confirmed + deaths + recovered)) * 100
                     var recoveredPercent = (recovered / (confirmed + deaths + recovered)) * 100
-                    var lastDataUpdate = out.lastUpdate.replace("T", " - ").substring(0, 21);
+                    var lastDataUpdate = out.confirmed.last_updated.replace("T", " - ").substring(0, 21);
 
                     console.log('Confirmed: ', confirmed)
                     document.getElementById("confirmed").innerHTML = numberWithCommas(confirmed)
@@ -201,16 +200,20 @@
                 })
                 .catch(err => console.error(err));
 
-            fetch("https://covid19.mathdro.id/api/countries/ch")
+            fetch(/*"https://covid19.mathdro.id/api/countries/ch"*/"https://coronavirus-tracker-api.herokuapp.com/all")
                 .then(res => res.json())
                 .then((out) => {
 
-                    var confirmed = out.confirmed.value;
-                    var deaths = out.deaths.value;
-                    var recovered = out.recovered.value;
+                    var arrayConfirmCH = out.confirmed.locations[31]
+                    var arrayDeathsCH = out.deaths.locations[31]
+                    var arrayRecovered = out.recovered.locations[31]
+                    
+                    var confirmed = arrayConfirmCH.latest;
+                    var deaths = arrayDeathsCH.latest;
+                    var recovered = arrayRecovered.latest;
                     var deathPercent = (deaths / (confirmed + deaths + recovered)) * 100
                     var recoveredPercent = (recovered / (confirmed + deaths + recovered)) * 100
-                    var lastDataUpdate = out.lastUpdate.replace("T", " - ").substring(0, 21);
+                    var lastDataUpdate = out.confirmed.last_updated.replace("T", " - ").substring(0, 21);
 
                     console.log('CH - Confirmed: ', confirmed)
                     document.getElementById("ch_confirmed").innerHTML = numberWithCommas(confirmed)
