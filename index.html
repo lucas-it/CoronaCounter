@@ -170,6 +170,36 @@
 
             </div>
 
+            <br/>
+            <div class="text-center display-4"><i class="em em-flag-ch" aria-role="presentation" aria-label="Switzerland Flag"></i> Switzerland statistics</div>
+            <br/>
+
+            <div class="row">
+
+                <div class="col-md-6" id="counters">
+
+                    <canvas id="ch_confirmed_history" style="max-width: 100%;"></canvas>
+
+                </div>
+
+                <div class="col-md-6" id="counters">
+
+                    <canvas id="ch_recovered_history" style="max-width: 100%;"></canvas>
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6" id="counters">
+
+                    <canvas id="ch_deaths_history" style="max-width: 100%;"></canvas>
+
+                </div>
+
+            </div>
+
         </div>
 
         <hr>
@@ -182,7 +212,7 @@
                         <p>Last world data update : <b><i id="last_update">0</i></b><br/> Last switzerland data update : <b><i id="ch_last_update">0</i></b></p>
                     </div>
                     <div class="col">
-                        <p>Data source : <a href="https://covid19.mathdro.id/api" target="_blank">covid19.mathdro.id/api</a></p>
+                        <p>Data source : <a href="https://covid19.mathdro.id/api" target="_blank">covid19.mathdro.id/api</a><br/>Data source : <a href="https://covid19api.com">covid19api.com</a></p>
                     </div>
                 </div>
             </div>
@@ -190,8 +220,10 @@
 
         <!-- jQuery -->
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-        <!-- Get datas from API -->
+        
+        <!-- Set cards datas -->
         <script>
+            //GET - Number of confirmed, deaths and recovered in the world
             fetch("https://covid19.mathdro.id/api")
                 .then(res => res.json())
                 .then((out) => {
@@ -224,6 +256,7 @@
                 })
                 .catch(err => console.error(err));
 
+            //GET - Number of confirmed, deaths and recovered in switzerland
             fetch("https://covid19.mathdro.id/api/countries/ch")
                 .then(res => res.json())
                 .then((out) => {
@@ -260,9 +293,11 @@
                 return str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "'");
             }
         </script>
+
         <!-- Set diagram -->
         <script type="text/javascript">
 
+            //GET - History of confirmed and recovered in the world
             fetch("https://covid19.mathdro.id/api/daily")
                 .then(res => res.json())
                 .then((out) => {
@@ -275,8 +310,6 @@
                         aConfHistory[history[key].reportDateString] = history[key].totalConfirmed
                         aRecovHistory[history[key].reportDateString] = history[key].totalRecovered
                     })
-
-                    console.log(aConfHistory)
 
                     var confirmedHistoryDates = Object.keys(aConfHistory);
                     var confirmedHistoryValues = Object.values(aConfHistory);
@@ -325,6 +358,147 @@
                                 ],
                                 borderColor: [
                                     'rgba(40, 167, 69, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
+                        }
+                    })
+
+                })
+                .catch(err => console.error(err))
+
+            //GET - History of confirmed in switzerland
+            fetch("https://api.covid19api.com/total/country/switzerland/status/confirmed")
+                .then(res => res.json())
+                .then((out) => {
+
+                    var history = out
+                    var aConfHistory = new Array()
+
+                    Object.keys(history).map(function (key) {
+                        let sDate = history[key].Date.substring(0, 10)
+                        aConfHistory[sDate] = history[key].Cases
+                    })
+
+                    var confirmedHistoryDates = Object.keys(aConfHistory);
+                    var confirmedHistoryValues = Object.values(aConfHistory);
+
+                    var ctx = document.getElementById('ch_confirmed_history').getContext('2d')
+                    var myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: confirmedHistoryDates,
+                            datasets: [{
+                                label: 'INFECTÉS',
+                                data: confirmedHistoryValues,
+                                backgroundColor: [
+                                    'rgba(255, 193, 7, 0.5)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 193, 7, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
+                        }
+                    })
+
+                })
+                .catch(err => console.error(err))
+
+            //GET - History of recovered in switzerland
+            fetch("https://api.covid19api.com/total/country/switzerland/status/recovered")
+                .then(res => res.json())
+                .then((out) => {
+
+                    var history = out
+                    var aRecovHistory = new Array()
+
+                    Object.keys(history).map(function (key) {
+                        let sDate = history[key].Date.substring(0, 10)
+                        aRecovHistory[sDate] = history[key].Cases
+                    })
+
+                    var recoveredHistoryDates = Object.keys(aRecovHistory);
+                    var recoveredHistoryValues = Object.values(aRecovHistory);
+
+                    var ctx = document.getElementById('ch_recovered_history').getContext('2d')
+                    var myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: recoveredHistoryDates,
+                            datasets: [{
+                                label: 'GUÉRIS',
+                                data: recoveredHistoryValues,
+                                backgroundColor: [
+                                    'rgba(40, 167, 69, 0.5)'
+                                ],
+                                borderColor: [
+                                    'rgba(40, 167, 69, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
+                        }
+                    })
+
+                })
+                .catch(err => console.error(err))
+
+            // GET - History of deaths in switzerland
+            fetch("https://api.covid19api.com/total/country/switzerland/status/deaths")
+                .then(res => res.json())
+                .then((out) => {
+
+                    var history = out
+                    var aDeathsHistory = new Array()
+
+                    Object.keys(history).map(function (key) {
+                        let sDate = history[key].Date.substring(0, 10)
+                        aDeathsHistory[sDate] = history[key].Cases
+                    })
+
+                    var deathsHistoryDates = Object.keys(aDeathsHistory);
+                    var deathsHistoryValues = Object.values(aDeathsHistory);
+
+                    var ctx = document.getElementById('ch_deaths_history').getContext('2d')
+                    var myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: deathsHistoryDates,
+                            datasets: [{
+                                label: 'DÉCÈS',
+                                data: deathsHistoryValues,
+                                backgroundColor: [
+                                    'rgba(220, 53, 69, 0.5)'
+                                ],
+                                borderColor: [
+                                    'rgba(220, 53, 69, 1)'
                                 ],
                                 borderWidth: 1
                             }]
