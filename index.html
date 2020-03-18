@@ -151,7 +151,7 @@
             <hr>
 
             <br/>
-            <div class="text-center display-4">🌍 World statistics</div>
+            <h3 class="text-center">🌍 World statistics</h3>
             <br/>
 
             <div class="row">
@@ -171,7 +171,7 @@
             </div>
 
             <br/>
-            <div class="text-center display-4"><i class="em em-flag-ch" aria-role="presentation" aria-label="Switzerland Flag"></i> Switzerland statistics</div>
+            <h3 class="text-center"><i class="em em-flag-ch" aria-role="presentation" aria-label="Switzerland Flag"></i> Switzerland statistics</h3>
             <br/>
 
             <div class="row">
@@ -223,6 +223,7 @@
         
         <!-- Set cards datas -->
         <script>
+
             //GET - Number of confirmed, deaths and recovered in the world
             fetch("https://covid19.mathdro.id/api")
                 .then(res => res.json())
@@ -256,46 +257,63 @@
                 })
                 .catch(err => console.error(err));
 
+            //CH - confirmed today
+            var chConfirmedToD = getDatas()
+            //CH - deaths today
+            var chDeathsToD = 0
+            //CH - recovered today
+            var chRecoveredToD = 0
+            //CH - date of today
+            var today = new Date()
+            var month = ("0" + (today.getMonth() + 1)).slice(-2);
+            var dateToD = today.getFullYear() + "-" + month + "-" + today.getDate()
+
             //GET - Number of confirmed, deaths and recovered in switzerland
-            fetch("https://covid19.mathdro.id/api/countries/ch")
-                .then(res => res.json())
-                .then((out) => {
+            function getDatas() {
+                fetch("https://covid19.mathdro.id/api/countries/ch")
+                    .then(res => res.json())
+                    .then((out) => {
 
-                    var confirmed = out.confirmed.value
-                    var deaths = out.deaths.value
-                    var recovered = out.recovered.value
-                    var deathPercent = (deaths / (confirmed + deaths + recovered)) * 100
-                    var recoveredPercent = (recovered / (confirmed + deaths + recovered)) * 100
-                    var lastDataUpdate = out.lastUpdate.replace("T", " - ").substring(0, 21);
+                        var confirmed = out.confirmed.value
+                        var deaths = out.deaths.value
+                        var recovered = out.recovered.value
+                        var deathPercent = (deaths / (confirmed + deaths + recovered)) * 100
+                        var recoveredPercent = (recovered / (confirmed + deaths + recovered)) * 100
+                        var lastDataUpdate = out.lastUpdate.replace("T", " - ").substring(0, 21);
 
-                    console.log('CH - Confirmed: ', confirmed)
-                    document.getElementById("ch_confirmed").innerHTML = numberWithCommas(confirmed)
+                        chConfirmedToD = confirmed
+                        chDeathsToD = deaths
+                        chRecoveredToD = recovered
 
-                    console.log('CH - Deaths: ', deaths)
-                    document.getElementById("ch_deaths").innerHTML = numberWithCommas(deaths)
+                        console.log('CH - Confirmed: ', confirmed)
+                        document.getElementById("ch_confirmed").innerHTML = numberWithCommas(confirmed)
 
-                    console.log('CH - Recovered: ', recovered)
-                    document.getElementById("ch_recovered").innerHTML = numberWithCommas(recovered)
+                        console.log('CH - Deaths: ', deaths)
+                        document.getElementById("ch_deaths").innerHTML = numberWithCommas(deaths)
 
-                    console.log('CH - Death Percent: ', deathPercent)
-                    document.getElementById("ch_death_percent").innerHTML = Math.round(deathPercent * 100) / 100 + " %"
+                        console.log('CH - Recovered: ', recovered)
+                        document.getElementById("ch_recovered").innerHTML = numberWithCommas(recovered)
 
-                    console.log('CH - Recovered Percent: ', recoveredPercent)
-                    document.getElementById("ch_recovered_percent").innerHTML = Math.round(recoveredPercent * 100) / 100 + " %"
+                        console.log('CH - Death Percent: ', deathPercent)
+                        document.getElementById("ch_death_percent").innerHTML = Math.round(deathPercent * 100) / 100 + " %"
 
-                    console.log('CH - Last data update : ', lastDataUpdate)
-                    document.getElementById("ch_last_update").innerHTML = lastDataUpdate
+                        console.log('CH - Recovered Percent: ', recoveredPercent)
+                        document.getElementById("ch_recovered_percent").innerHTML = Math.round(recoveredPercent * 100) / 100 + " %"
 
-                })
-                .catch(err => console.error(err));
+                        console.log('CH - Last data update : ', lastDataUpdate)
+                        document.getElementById("ch_last_update").innerHTML = lastDataUpdate
+
+                        return confirmed
+
+                    })
+                    .catch(err => console.error(err));
+            }
 
             function numberWithCommas(str) {
                 return str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "'");
             }
-        </script>
 
-        <!-- Set diagram -->
-        <script type="text/javascript">
+            // Set diagram
 
             //GET - History of confirmed and recovered in the world
             fetch("https://covid19.mathdro.id/api/daily")
@@ -389,6 +407,8 @@
                         aConfHistory[sDate] = history[key].Cases
                     })
 
+                    aConfHistory[dateToD] = chConfirmedToD
+
                     var confirmedHistoryDates = Object.keys(aConfHistory);
                     var confirmedHistoryValues = Object.values(aConfHistory);
 
@@ -435,6 +455,8 @@
                         let sDate = history[key].Date.substring(0, 10)
                         aRecovHistory[sDate] = history[key].Cases
                     })
+
+                    aRecovHistory[dateToD] = chRecoveredToD
 
                     var recoveredHistoryDates = Object.keys(aRecovHistory);
                     var recoveredHistoryValues = Object.values(aRecovHistory);
@@ -483,6 +505,8 @@
                         aDeathsHistory[sDate] = history[key].Cases
                     })
 
+                    aDeathsHistory[dateToD] = chDeathsToD
+
                     var deathsHistoryDates = Object.keys(aDeathsHistory);
                     var deathsHistoryValues = Object.values(aDeathsHistory);
 
@@ -518,7 +542,6 @@
                 .catch(err => console.error(err))
 
         </script>
-
 
     </body>
 
