@@ -394,8 +394,119 @@
                 })
                 .catch(err => console.error(err))
 
+            //GET - History in Switzerland
+            fetch("https://coronavirus-tracker-api.herokuapp.com/v2/locations/31")
+                .then(res => res.json())
+                .then((out) => {
+
+                    var historyConf = out.location.timelines.confirmed.timeline
+                    var historyDeath = out.location.timelines.deaths.timeline
+                    var historyRecov = out.location.timelines.recovered.timeline
+
+                    var confirmedHistoryDates = Object.keys(historyConf)
+                    var confirmedHistoryValues = Object.values(historyConf)
+
+                    var deathsHistoryDates = Object.keys(historyDeath)
+                    var deathsHistoryValues = Object.values(historyDeath)
+
+                    var recoveredHistoryDates = Object.keys(historyRecov)
+                    var recoveredHistoryValues = Object.values(historyRecov)
+
+                    for(i = 0; i < confirmedHistoryDates.length; i++) {
+                        confirmedHistoryDates[i] = confirmedHistoryDates[i].substring(0, 10)
+                        recoveredHistoryDates[i] = recoveredHistoryDates[i].substring(0, 10)
+                        deathsHistoryDates[i] = deathsHistoryDates[i].substring(0, 10)
+                    }
+
+                    var ctx = document.getElementById('ch_confirmed_history').getContext('2d')
+                    var myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: confirmedHistoryDates,
+                            datasets: [{
+                                label: 'INFECTÉS',
+                                data: confirmedHistoryValues,
+                                backgroundColor: [
+                                    'rgba(255, 193, 7, 0.5)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 193, 7, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
+                        }
+                    })
+
+                    var ctx = document.getElementById('ch_recovered_history').getContext('2d')
+                    var myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: recoveredHistoryDates,
+                            datasets: [{
+                                label: 'GUÉRIS',
+                                data: recoveredHistoryValues,
+                                backgroundColor: [
+                                    'rgba(40, 167, 69, 0.5)'
+                                ],
+                                borderColor: [
+                                    'rgba(40, 167, 69, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
+                        }
+                    })
+
+                    var ctx = document.getElementById('ch_deaths_history').getContext('2d')
+                    var myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: deathsHistoryDates,
+                            datasets: [{
+                                label: 'DÉCÈS',
+                                data: deathsHistoryValues,
+                                backgroundColor: [
+                                    'rgba(220, 53, 69, 0.5)'
+                                ],
+                                borderColor: [
+                                    'rgba(220, 53, 69, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
+                        }
+                    })
+
+                })
+                .catch(err => console.error(err))
+
             //GET - History of confirmed in switzerland
-            fetch("https://api.covid19api.com/total/country/switzerland/status/confirmed")
+            /*fetch("https://api.covid19api.com/total/country/switzerland/status/confirmed")
                 .then(res => res.json())
                 .then((out) => {
 
@@ -539,7 +650,7 @@
                     })
 
                 })
-                .catch(err => console.error(err))
+                .catch(err => console.error(err))*/
 
         </script>
 
