@@ -435,7 +435,7 @@
 
                     for(i = 0; i < confirmedHistoryDates.length; i++) {
                         confirmedHistoryDates[i] = confirmedHistoryDates[i].substring(0, 10)
-                        recoveredHistoryDates[i] = recoveredHistoryDates[i].substring(0, 10)
+                        if(recoveredHistoryDates.length != 0) recoveredHistoryDates[i] = recoveredHistoryDates[i].substring(0, 10)
                         deathsHistoryDates[i] = deathsHistoryDates[i].substring(0, 10)
                     }
 
