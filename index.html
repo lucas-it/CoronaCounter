@@ -158,16 +158,18 @@
                 <div class="col-md-6" id="counters">
                     <canvas id="confirmed_graph" style="max-width: 100%;"></canvas>
                 </div>
-                <div class="col-md-6 col-md-offset-8" id="counters">
-                    <canvas id="recovered_graph" style="max-width: 100%;"></canvas>
-                </div>
-            </div>
-
-            <div class="row">
                 <div class="col-md-6" id="counters">
                     <canvas id="deaths_graph" style="max-width: 100%;"></canvas>
                 </div>
             </div>
+
+            <!--
+            <div class="row">
+                <div class="col-md-6 col-md-offset-8" id="counters">
+                    <canvas id="recovered_graph" style="max-width: 100%;"></canvas>
+                </div>
+            </div>
+            -->
 
             <br/>
             <h3 class="text-center"><i class="em em-flag-ch" aria-role="presentation" aria-label="Switzerland Flag"></i> Switzerland statistics</h3>
@@ -178,15 +180,17 @@
                     <canvas id="ch_confirmed_history" style="max-width: 100%;"></canvas>
                 </div>
                 <div class="col-md-6" id="counters">
-                    <canvas id="ch_recovered_history" style="max-width: 100%;"></canvas>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6" id="counters">
                     <canvas id="ch_deaths_history" style="max-width: 100%;"></canvas>
                 </div>
             </div>
+
+            <!--
+            <div class="row">
+                <div class="col-md-6" id="counters">
+                    <canvas id="ch_recovered_history" style="max-width: 100%;"></canvas>
+                </div>
+            </div>
+            -->
 
         </div>
 
@@ -200,7 +204,7 @@
                         <p>Last world data update : <b><i id="last_update">0</i></b><br/> Last switzerland data update : <b><i id="ch_last_update">0</i></b></p>
                     </div>
                     <div class="col">
-                        <p>Data source : <a href="https://covid19.mathdro.id/api" target="_blank">covid19.mathdro.id/api</a><br/>Data source : <a href="https://github.com/ExpDev07/coronavirus-tracker-api">github.com/ExpDev07/coronavirus-tracker-api</a></p>
+                        <p>Data source : <a href="https://covid19.mathdro.id/api" target="_blank">covid19.mathdro.id/api</a></p>
                     </div>
                 </div>
             </div>
@@ -245,65 +249,12 @@
                 })
                 .catch(err => console.error(err));
 
-            //CH - confirmed today
-            var chConfirmedToD = getDatas()
-            //CH - deaths today
-            var chDeathsToD = 0
-            //CH - recovered today
-            var chRecoveredToD = 0
-            //CH - date of today
+            //Date of today
             var today = new Date()
             var month = ("0" + (today.getMonth() + 1)).slice(-2);
             var dateToD = today.getFullYear() + "-" + month + "-" + today.getDate()
 
-            //GET - Number of confirmed, deaths and recovered in switzerland
-            function getDatas() {
-                fetch("https://covid19.mathdro.id/api/countries/ch")
-                    .then(res => res.json())
-                    .then((out) => {
-
-                        var confirmed = out.confirmed.value
-                        var deaths = out.deaths.value
-                        var recovered = out.recovered.value
-                        var deathPercent = (deaths / (confirmed + deaths + recovered)) * 100
-                        var recoveredPercent = (recovered / (confirmed + deaths + recovered)) * 100
-                        var lastDataUpdate = out.lastUpdate.replace("T", " - ").substring(0, 21);
-
-                        chConfirmedToD = confirmed
-                        chDeathsToD = deaths
-                        chRecoveredToD = recovered
-
-                        console.log('CH - Confirmed: ', confirmed)
-                        document.getElementById("ch_confirmed").innerHTML = numberWithCommas(confirmed)
-
-                        console.log('CH - Deaths: ', deaths)
-                        document.getElementById("ch_deaths").innerHTML = numberWithCommas(deaths)
-
-                        console.log('CH - Recovered: ', recovered)
-                        document.getElementById("ch_recovered").innerHTML = numberWithCommas(recovered)
-
-                        console.log('CH - Death Percent: ', deathPercent)
-                        document.getElementById("ch_death_percent").innerHTML = Math.round(deathPercent * 100) / 100 + " %"
-
-                        console.log('CH - Recovered Percent: ', recoveredPercent)
-                        document.getElementById("ch_recovered_percent").innerHTML = Math.round(recoveredPercent * 100) / 100 + " %"
-
-                        console.log('CH - Last data update : ', lastDataUpdate)
-                        document.getElementById("ch_last_update").innerHTML = lastDataUpdate
-
-                        return confirmed
-
-                    })
-                    .catch(err => console.error(err));
-            }
-
-            function numberWithCommas(str) {
-                return str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "'");
-            }
-
-            // Set diagram
-
-            //GET - History of confirmed and recovered in the world
+            //GET - History in the world
             fetch("https://covid19.mathdro.id/api/daily")
                 .then(res => res.json())
                 .then((out) => {
@@ -356,7 +307,7 @@
                         }
                     })
 
-                    var ctx = document.getElementById('recovered_graph').getContext('2d')
+                    /*var ctx = document.getElementById('recovered_graph').getContext('2d')
                     var myChart = new Chart(ctx, {
                         type: 'line',
                         data: {
@@ -382,7 +333,7 @@
                                 }]
                             }
                         }
-                    })
+                    })*/
 
                     var ctx = document.getElementById('deaths_graph').getContext('2d')
                     var myChart = new Chart(ctx, {
@@ -415,14 +366,47 @@
                 })
                 .catch(err => console.error(err))
 
-            //GET - History in Switzerland
-            fetch("https://coronavirus-tracker-api.herokuapp.com/v2/locations/31")
+            //GET - Number of confirmed, deaths and recovered in switzerland
+            fetch("https://covid19-switzerland.herokuapp.com/stats/switzerland")
                 .then(res => res.json())
                 .then((out) => {
 
-                    var historyConf = out.location.timelines.confirmed.timeline
-                    var historyDeath = out.location.timelines.deaths.timeline
-                    var historyRecov = out.location.timelines.recovered.timeline
+                    var confirmed = out.Confirmed
+                    var deaths = out.Deaths
+                    var recovered = out.Recovered
+                    var deathPercent = (deaths / (confirmed + deaths + recovered)) * 100
+                    var recoveredPercent = (recovered / (confirmed + deaths + recovered)) * 100
+                    var lastDataUpdate = out.Last_Update
+
+                    console.log('CH - Confirmed: ', confirmed)
+                    document.getElementById("ch_confirmed").innerHTML = numberWithCommas(confirmed)
+
+                    console.log('CH - Deaths: ', deaths)
+                    document.getElementById("ch_deaths").innerHTML = numberWithCommas(deaths)
+
+                    console.log('CH - Recovered: ', recovered)
+                    document.getElementById("ch_recovered").innerHTML = numberWithCommas(recovered)
+
+                    console.log('CH - Death Percent: ', deathPercent)
+                    document.getElementById("ch_death_percent").innerHTML = Math.round(deathPercent * 100) / 100 + " %"
+
+                    console.log('CH - Recovered Percent: ', recoveredPercent)
+                    document.getElementById("ch_recovered_percent").innerHTML = Math.round(recoveredPercent * 100) / 100 + " %"
+
+                    console.log('CH - Last data update : ', lastDataUpdate)
+                    document.getElementById("ch_last_update").innerHTML = lastDataUpdate
+
+                })
+                .catch(err => console.error(err));
+
+            //GET - History in Switzerland
+            fetch("https://covid19-switzerland.herokuapp.com/timeline/switzerland")
+                .then(res => res.json())
+                .then((out) => {
+
+                    var historyConf = out.Confirmed
+                    var historyDeath = out.Deaths
+                    var historyRecov = out.Recovered
 
                     var confirmedHistoryDates = Object.keys(historyConf)
                     var confirmedHistoryValues = Object.values(historyConf)
@@ -434,9 +418,17 @@
                     var recoveredHistoryValues = Object.values(historyRecov)
 
                     for(i = 0; i < confirmedHistoryDates.length; i++) {
-                        confirmedHistoryDates[i] = confirmedHistoryDates[i].substring(0, 10)
-                        if(recoveredHistoryDates.length != 0) recoveredHistoryDates[i] = recoveredHistoryDates[i].substring(0, 10)
-                        deathsHistoryDates[i] = deathsHistoryDates[i].substring(0, 10)
+
+                        let confOldDate = new Date(confirmedHistoryDates[i])
+                        let deathsOldDate = new Date(confirmedHistoryDates[i])
+
+                        let confFormattedDate = confOldDate.getFullYear() + "-" + pad(confOldDate.getMonth() + 1) + "-" + pad(confOldDate.getDate())
+                        let deathsFormattedDate = deathsOldDate.getFullYear() + "-" + pad(deathsOldDate.getMonth() + 1) + "-" + pad(deathsOldDate.getDate())
+                        
+                        confirmedHistoryDates[i] = confFormattedDate
+                        //recoveredHistoryDates[i] = recoveredHistoryDates[i]
+                        deathsHistoryDates[i] = deathsFormattedDate
+
                     }
 
                     var ctx = document.getElementById('ch_confirmed_history').getContext('2d')
@@ -467,7 +459,7 @@
                         }
                     })
 
-                    var ctx = document.getElementById('ch_recovered_history').getContext('2d')
+                    /*var ctx = document.getElementById('ch_recovered_history').getContext('2d')
                     var myChart = new Chart(ctx, {
                         type: 'line',
                         data: {
@@ -493,7 +485,7 @@
                                 }]
                             }
                         }
-                    })
+                    })*/
 
                     var ctx = document.getElementById('ch_deaths_history').getContext('2d')
                     var myChart = new Chart(ctx, {
@@ -525,6 +517,18 @@
 
                 })
                 .catch(err => console.error(err))
+
+            function numberWithCommas(str) {
+                return str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+            }
+
+            function pad(number) {
+                var str = '' + number;
+                while (str.length < 2) {
+                    str = '0' + str;
+                }
+                return str;
+            }
 
         </script>
 
