@@ -184,13 +184,11 @@
                 </div>
             </div>
 
-            <!--
             <div class="row">
                 <div class="col-md-6" id="counters">
                     <canvas id="ch_recovered_history" style="max-width: 100%;"></canvas>
                 </div>
             </div>
-            -->
 
         </div>
 
@@ -376,7 +374,7 @@
                     var recovered = out.Recovered
                     var deathPercent = (deaths / (confirmed + deaths + recovered)) * 100
                     var recoveredPercent = (recovered / (confirmed + deaths + recovered)) * 100
-                    var lastDataUpdate = out.Last_Update
+                    var lastDataUpdate = out.Last_Update.replace(" ", " - ")
 
                     console.log('CH - Confirmed: ', confirmed)
                     document.getElementById("ch_confirmed").innerHTML = numberWithCommas(confirmed)
@@ -426,7 +424,7 @@
                         let deathsFormattedDate = deathsOldDate.getFullYear() + "-" + pad(deathsOldDate.getMonth() + 1) + "-" + pad(deathsOldDate.getDate())
                         
                         confirmedHistoryDates[i] = confFormattedDate
-                        //recoveredHistoryDates[i] = recoveredHistoryDates[i]
+                        recoveredHistoryDates[i] = recoveredHistoryDates[i]
                         deathsHistoryDates[i] = deathsFormattedDate
 
                     }
@@ -459,7 +457,7 @@
                         }
                     })
 
-                    /*var ctx = document.getElementById('ch_recovered_history').getContext('2d')
+                    var ctx = document.getElementById('ch_recovered_history').getContext('2d')
                     var myChart = new Chart(ctx, {
                         type: 'line',
                         data: {
@@ -485,7 +483,7 @@
                                 }]
                             }
                         }
-                    })*/
+                    })
 
                     var ctx = document.getElementById('ch_deaths_history').getContext('2d')
                     var myChart = new Chart(ctx, {
