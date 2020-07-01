@@ -5,7 +5,7 @@
         <meta charset="UTF-8">
         <title>CoronaCounter - lucasaymon.ch</title>
         <meta charset="UTF-8"></meta>
-        <link rel="stylesheet" href="bootstrap.css">
+        <link rel="stylesheet" href="./bootstrap.css">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
         <link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
         <style>
@@ -140,6 +140,15 @@
                                 </div>
                             </div>
 
+                            <div class="card text-center mb-2 bg-primary" id="swisscovid-download-card">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <span class="display-4" id="ch_usage_percent">15 %</span>
+                                    </p>
+                                    <h4 class="card-title">TAUX D'UTILISATION DE SWISSCOVID</h4>
+                                </div>
+                            </div>
+
                         </div>
 
                     </div>
@@ -182,6 +191,7 @@
             <canvas id="ch_confirmed_history" style="max-width: 70%; margin: 0 auto;"></canvas>
             <canvas id="ch_deaths_history" style="max-width: 70%; margin: 0 auto;"></canvas>
             <canvas id="ch_recovered_history" style="max-width: 70%; margin: 0 auto;"></canvas>
+            <canvas id="ch_activates_app" style="max-width: 70%; margin: 0 auto;"></canvas>
 
             <!--
             <div class="row">
@@ -428,13 +438,15 @@
                     for(i = 0; i < confirmedHistoryDates.length; i++) {
 
                         let confOldDate = new Date(confirmedHistoryDates[i])
-                        let deathsOldDate = new Date(confirmedHistoryDates[i])
+                        let deathsOldDate = new Date(deathsHistoryDates[i])
+                        let recoveredOldDate = new Date(recoveredHistoryDates[i])
 
                         let confFormattedDate = confOldDate.getFullYear() + "-" + pad(confOldDate.getMonth() + 1) + "-" + pad(confOldDate.getDate())
                         let deathsFormattedDate = deathsOldDate.getFullYear() + "-" + pad(deathsOldDate.getMonth() + 1) + "-" + pad(deathsOldDate.getDate())
-                        
+                        let recoveredFormattedDate = recoveredOldDate.getFullYear() + "-" + pad(recoveredOldDate.getMonth() + 1) + "-" + pad(recoveredOldDate.getDate())
+
                         confirmedHistoryDates[i] = confFormattedDate
-                        recoveredHistoryDates[i] = recoveredHistoryDates[i]
+                        recoveredHistoryDates[i] = recoveredFormattedDate
                         deathsHistoryDates[i] = deathsFormattedDate
 
                     }
@@ -503,6 +515,68 @@
                             datasets: [{
                                 label: 'DÉCÈS',
                                 data: deathsHistoryValues,
+                                backgroundColor: [
+                                    'rgba(220, 53, 69, 0.5)'
+                                ],
+                                borderColor: [
+                                    'rgba(220, 53, 69, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
+                        }
+                    })
+
+                })
+                .catch(err => console.error(err))
+
+            //GET - SwissCovid number of activations
+            fetch("https://www.bfs.admin.ch/bfsstatic/dam/assets/orderNr:ds-q-14.01-SwissCovidApp-01/master")
+                .then(res => res.json())
+                .then((out) => {
+
+                    var lastUpdate = out.dataStatus
+                    var historyNumberOfActivate = out.data
+                    var lastNumberOfActivate = 0;
+
+                    var activateDates = [];
+                    var activateValues = [];
+
+                    for(i = 0; i < historyNumberOfActivate.length; i++) {
+                        
+                        let arrDate = historyNumberOfActivate[i].Date.split("/")
+                        let date = new Date(arrDate[1] + "/" + arrDate[0] + "/" + arrDate[2])
+
+                        let formattedDate = date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate())
+                        let value = historyNumberOfActivate[i].Actapps
+                        
+                        activateDates[i] = formattedDate
+                        activateValues[i] = value
+
+                    }
+
+                    lastNumberOfActivate = activateValues[activateValues.length - 1]
+
+                    let usagePercent = lastNumberOfActivate / 8500000 * 100
+
+                    document.getElementById("ch_usage_percent").innerHTML = Math.round((usagePercent) * 100) / 100 + " %"
+
+                    var ctx = document.getElementById('ch_activates_app').getContext('2d')
+                    var myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: activateDates,
+                            datasets: [{
+                                label: 'Personnes utilisant SwissCovid',
+                                data: activateValues,
                                 backgroundColor: [
                                     'rgba(220, 53, 69, 0.5)'
                                 ],
