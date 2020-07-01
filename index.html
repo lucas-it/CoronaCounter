@@ -4,8 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <title>CoronaCounter - lucasaymon.ch</title>
-        <meta charset="UTF-8"></meta>
-        <link rel="stylesheet" href="./bootstrap.css">
+        <link rel="stylesheet" href="https://corona.lucasaymon.ch/bootstrap.css">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
         <link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
         <style>
@@ -28,7 +27,7 @@
 
             <div class="row">
 
-                <div class="col-md-6" id="counters">
+                <div class="col-md-6">
 
                     <div class="card">
 
@@ -36,7 +35,7 @@
 
                         <div class="card-body">
 
-                            <div class="card text-center mb-2 bg-warning" id="infection-counter-card">
+                            <div class="card text-center mb-2 bg-warning">
                                 <div class="card-body">
                                     <p class="card-text">
                                         <span class="display-4" id="confirmed">0</span>
@@ -45,7 +44,7 @@
                                 </div>
                             </div>
 
-                            <div class="card text-center mb-2 bg-danger" id="death-counter-card">
+                            <div class="card text-center mb-2 bg-danger">
                                 <div class="card-body">
                                     <p class="card-text">
                                         <span class="display-4" id="deaths">0</span>
@@ -54,7 +53,7 @@
                                 </div>
                             </div>
 
-                            <div class="card text-center mb-2 bg-success" id="death-counter-card">
+                            <div class="card text-center mb-2 bg-success">
                                 <div class="card-body">
                                     <p class="card-text">
                                         <span class="display-4" id="recovered">0</span>
@@ -63,7 +62,7 @@
                                 </div>
                             </div>
 
-                            <div class="card text-center mb-2 bg-secondary" id="death-counter-card">
+                            <div class="card text-center mb-2 bg-secondary">
                                 <div class="card-body">
                                     <p class="card-text">
                                         <span class="display-4" id="death_percent">0</span>
@@ -72,7 +71,7 @@
                                 </div>
                             </div>
 
-                            <div class="card text-center mb-2 bg-primary" id="death-counter-card">
+                            <div class="card text-center mb-2 bg-info">
                                 <div class="card-body">
                                     <p class="card-text">
                                         <span class="display-4" id="recovered_percent">0</span>
@@ -87,7 +86,7 @@
 
                 </div>
 
-                <div class="col-md-6 col-md-offset-8" id="counters">
+                <div class="col-md-6 col-md-offset-8">
 
                     <div class="card">
 
@@ -95,7 +94,7 @@
 
                         <div class="card-body">
 
-                            <div class="card text-center mb-2 bg-warning" id="infection-counter-card">
+                            <div class="card text-center mb-2 bg-warning">
                                 <div class="card-body">
                                     <p class="card-text">
                                         <span class="display-4" id="ch_confirmed">0</span>
@@ -104,7 +103,7 @@
                                 </div>
                             </div>
 
-                            <div class="card text-center mb-2 bg-danger" id="death-counter-card">
+                            <div class="card text-center mb-2 bg-danger">
                                 <div class="card-body">
                                     <p class="card-text">
                                         <span class="display-4" id="ch_deaths">0</span>
@@ -113,7 +112,7 @@
                                 </div>
                             </div>
 
-                            <div class="card text-center mb-2 bg-success" id="death-counter-card">
+                            <div class="card text-center mb-2 bg-success">
                                 <div class="card-body">
                                     <p class="card-text">
                                         <span class="display-4" id="ch_recovered">0</span>
@@ -122,7 +121,7 @@
                                 </div>
                             </div>
 
-                            <div class="card text-center mb-2 bg-secondary" id="death-counter-card">
+                            <div class="card text-center mb-2 bg-secondary">
                                 <div class="card-body">
                                     <p class="card-text">
                                         <span class="display-4" id="ch_death_percent">0</span>
@@ -131,7 +130,7 @@
                                 </div>
                             </div>
 
-                            <div class="card text-center mb-2 bg-primary" id="death-counter-card">
+                            <div class="card text-center mb-2 bg-info">
                                 <div class="card-body">
                                     <p class="card-text">
                                         <span class="display-4" id="ch_recovered_percent">0</span>
@@ -140,7 +139,7 @@
                                 </div>
                             </div>
 
-                            <div class="card text-center mb-2 bg-primary" id="swisscovid-download-card">
+                            <div class="card text-center mb-2 bg-primary">
                                 <div class="card-body">
                                     <p class="card-text">
                                         <span class="display-4" id="ch_usage_percent">15 %</span>
@@ -229,7 +228,7 @@
         </footer>
 
         <!-- jQuery -->
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
         
         <!-- Set cards datas -->
         <script>
@@ -578,10 +577,10 @@
                                 label: 'Personnes utilisant SwissCovid',
                                 data: activateValues,
                                 backgroundColor: [
-                                    'rgba(220, 53, 69, 0.5)'
+                                    'rgba(0, 123, 255, 0.5)'
                                 ],
                                 borderColor: [
-                                    'rgba(220, 53, 69, 1)'
+                                    'rgba(0, 123, 255, 1)'
                                 ],
                                 borderWidth: 1
                             }]
