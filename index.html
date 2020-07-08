@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <title>CoronaCounter - lucasaymon.ch</title>
-        <link rel="stylesheet" href="https://corona.lucasaymon.ch/bootstrap.css">
+        <link rel="stylesheet" href="./bootstrap.css">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
         <link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
         <style>
@@ -142,7 +142,7 @@
                             <div class="card text-center mb-2 bg-primary">
                                 <div class="card-body">
                                     <p class="card-text">
-                                        <span class="display-4" id="ch_usage_percent">15 %</span>
+                                        <span class="display-4" id="ch_usage_percent">0</span>
                                     </p>
                                     <h4 class="card-title">TAUX D'UTILISATION DE SWISSCOVID</h4>
                                 </div>
@@ -191,6 +191,7 @@
             <canvas id="ch_deaths_history" style="max-width: 70%; margin: 0 auto;"></canvas>
             <canvas id="ch_recovered_history" style="max-width: 70%; margin: 0 auto;"></canvas>
             <canvas id="ch_activates_app" style="max-width: 70%; margin: 0 auto;"></canvas>
+            <canvas id="ch_activates_app_diff" style="max-width: 70%; margin: 0 auto;"></canvas>
 
             <!--
             <div class="row">
@@ -546,8 +547,9 @@
                     var historyNumberOfActivate = out.data
                     var lastNumberOfActivate = 0;
 
-                    var activateDates = [];
-                    var activateValues = [];
+                    var activateDates = []
+                    var activateValues = []
+                    var diffValues = []
 
                     for(i = 0; i < historyNumberOfActivate.length; i++) {
                         
@@ -556,9 +558,11 @@
 
                         let formattedDate = date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate())
                         let value = historyNumberOfActivate[i].Actapps
+                        let diffValue = historyNumberOfActivate[i].Difference
                         
                         activateDates[i] = formattedDate
                         activateValues[i] = value
+                        diffValues[i] = diffValue
 
                     }
 
@@ -581,8 +585,31 @@
                                 ],
                                 borderColor: [
                                     'rgba(0, 123, 255, 1)'
-                                ],
-                                borderWidth: 1
+                                ]
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
+                        }
+                    })
+
+                    var ctx = document.getElementById('ch_activates_app_diff').getContext('2d')
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: activateDates,
+                            datasets: [{
+                                label: 'Différence du nombre d\'installation',
+                                data: diffValues,
+                                backgroundColor: 'rgba(25, 118, 210, 0.5)',
+                                borderColor: 'rgba(25, 118, 210, 1)',
+                                borderWidth: 1,
                             }]
                         },
                         options: {
