@@ -179,7 +179,6 @@
                     <canvas id="deaths_graph" style="max-width: 100%;"></canvas>
                 </div>
             </div>
-
             
             <div class="row">
                 <div class="col-md-6 col-md-offset-8" id="counters">
@@ -196,24 +195,6 @@
             <canvas id="ch_deaths_history" style="max-width: 70%; margin: 0 auto;"></canvas>
             <canvas id="ch_recovered_history" style="max-width: 70%; margin: 0 auto;"></canvas>
             <canvas id="ch_activates_app" style="max-width: 70%; margin: 0 auto;"></canvas>
-            <canvas id="ch_activates_app_diff" style="max-width: 70%; margin: 0 auto;"></canvas>
-
-            <!--
-            <div class="row">
-                <div class="col-md-6" id="counters">
-                    <canvas id="ch_confirmed_history" style="max-width: 100%;"></canvas>
-                </div>
-                <div class="col-md-6" id="counters">
-                    <canvas id="ch_deaths_history" style="max-width: 100%;"></canvas>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6" id="counters">
-                    <canvas id="ch_recovered_history" style="max-width: 100%;"></canvas>
-                </div>
-            </div>
-            -->
 
         </div>
 
@@ -227,7 +208,7 @@
                         <p>Last world data update : <b><i id="last_update">0</i></b><br/> Last switzerland data update : <b><i id="ch_last_update">0</i></b></p>
                     </div>
                     <div class="col">
-                        <p>Data source : <a href="https://covid19.mathdro.id/api" target="_blank">covid19.mathdro.id/api</a></p>
+                        <p>Covid data source : <a href="https://covid19.mathdro.id/api" target="_blank">covid19.mathdro.id/api</a><br/>SwissCovid data source : <a href="https://www.experimental.bfs.admin.ch/expstat/en/home/innovative-methods/swisscovid-app-monitoring.html" target="_blank">bfs.admin.ch</a></p>
                     </div>
                 </div>
             </div>
@@ -329,34 +310,6 @@
                             }
                         }
                     })
-
-                    /*var ctx = document.getElementById('recovered_graph').getContext('2d')
-                    var myChart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: recoveredHistoryDates,
-                            datasets: [{
-                                label: 'GUÉRIS',
-                                data: recoveredHistoryValues,
-                                backgroundColor: [
-                                    'rgba(40, 167, 69, 0.5)'
-                                ],
-                                borderColor: [
-                                    'rgba(40, 167, 69, 1)'
-                                ],
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            scales: {
-                                yAxes: [{
-                                    ticks: {
-                                        beginAtZero: true
-                                    }
-                                }]
-                            }
-                        }
-                    })*/
 
                     var ctx = document.getElementById('deaths_graph').getContext('2d')
                     var myChart = new Chart(ctx, {
@@ -554,7 +507,6 @@
 
                     var activateDates = []
                     var activateValues = []
-                    var diffValues = []
 
                     for(i = 0; i < historyNumberOfActivate.length; i++) {
                         
@@ -563,11 +515,9 @@
 
                         let formattedDate = date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate())
                         let value = historyNumberOfActivate[i].Actapps
-                        let diffValue = historyNumberOfActivate[i].Difference
                         
                         activateDates[i] = formattedDate
                         activateValues[i] = value
-                        diffValues[i] = diffValue
 
                     }
 
@@ -592,30 +542,6 @@
                                     'rgba(0, 123, 255, 1)'
                                 ],
                                 borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            scales: {
-                                yAxes: [{
-                                    ticks: {
-                                        beginAtZero: true
-                                    }
-                                }]
-                            }
-                        }
-                    })
-
-                    var ctx = document.getElementById('ch_activates_app_diff').getContext('2d')
-                    var myChart = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: activateDates,
-                            datasets: [{
-                                label: 'Différence du nombre d\'installation',
-                                data: diffValues,
-                                backgroundColor: 'rgba(25, 118, 210, 0.5)',
-                                borderColor: 'rgba(25, 118, 210, 1)',
-                                borderWidth: 1,
                             }]
                         },
                         options: {
