@@ -506,7 +506,7 @@
 
                 })
                 .catch(err => console.error(err))
-                ch_codeact_per_user_per_day
+            
             //GET - SwissCovid number of activations
             fetch("https://www.bfs.admin.ch/bfsstatic/dam/assets/orderNr:ds-q-14.01-SwissCovidApp-01.2/master")
                 .then(res => res.json())
@@ -599,7 +599,7 @@
                         data: {
                             labels: activateDates,
                             datasets: [{
-                                label: 'Code covid entré dans SwissCovid par utilisateur et par jour',
+                                label: 'Codes covid entré dans SwissCovid par jour',
                                 data: activateValues,
                                 backgroundColor: 'rgba(0, 123, 255, 0.5)',
                                 borderColor: 'rgba(0, 123, 255, 1)',
